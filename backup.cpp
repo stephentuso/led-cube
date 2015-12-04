@@ -7,9 +7,6 @@
 #include <Wire.h>
 #include <Centipede.h>
 
-// This was one of my first programming projects, I'm wondering why I made layers zero-indexed and everything else one-indexed
-// TODO: Fix that^ ? And maybe improve the way letters are printed ? Use less for loops possibly?
-
 Centipede C;
 
 int time = 100;
@@ -35,12 +32,38 @@ void Cube::initialize() {
   C.initialize();
 
   pinMode(13, OUTPUT);
-  C.portMode(0, 0);
-  C.portMode(1, 0);
-  C.portMode(2, 0);
-  C.portMode(3, 0);
+  C.portMode(0, 0b0000000000000000);
+  C.portMode(1, 0b0000000000000000);
+  C.portMode(2, 0b0000000000000000);
+  C.portMode(3, 0b0000000000000000);
   allOff();
   cli();//stop interrupts
+
+  //set timer0 interrupt at 2kHz
+  /*TCCR0A = 0;// set entire TCCR0A register to 0
+   TCCR0B = 0;// same for TCCR0B
+   TCNT0  = 0;//initialize counter value to 0
+   // set compare match register for 2khz increments
+   OCR0A = 249;// = (16*10^6) / (2000*64) - 1 (must be <256)
+   // turn on CTC mode
+   TCCR0A |= (1 << WGM01);
+   // Set CS01 and CS00 bits for 64 prescaler
+   TCCR0B |= (1 << CS01) | (1 << CS00);
+   // enable timer compare interrupt
+   TIMSK0 |= (1 << OCIE0A);*/
+
+  //set timer2 interrupt at 8kHz
+  /*TCCR2A = 0;// set entire TCCR2A register to 0
+   TCCR2B = 0;// same for TCCR2B
+   TCNT2  = 0;//initialize counter value to 0
+   // set compare match register for 8khz increments
+   OCR2A = 249;// = (16*10^6) / (8000*8) - 1 (must be <256)
+   // turn on CTC mode
+   TCCR2A |= (1 << WGM21);
+   // Set CS21 bit for 64 prescaler
+   TCCR2B |= (1 << CS21) | (1 << CS20);
+   // enable timer compare interrupt
+   TIMSK2 |= (1 << OCIE2A);*/
 
   //set timer1 interrupt at 1Hz
   TCCR1A = 0;// set entire TCCR1A register to 0
@@ -87,6 +110,33 @@ ISR(TIMER1_COMPA_vect){
   C.portWrite(0, ledStateInts[ledArrIndex]);
   C.portWrite(1, ledStateInts[ledArrIndex + 1]);
   C.portWrite(2, 1 << zeroIndexRow);
+
+  /*C.portWrite(0, )
+  if (row == 32) {
+    C.portWrite(0, ledStateInts[0]);
+    C.portWrite(1, ledStateInts[1]);
+    C.portWrite(2, 1);
+  }
+  else if (row == 33) {
+    C.portWrite(0, ledStateInts[2]);
+    C.portWrite(1, ledStateInts[3]);
+    C.portWrite(2, 2);
+  }
+  else if (row == 34) {
+    C.portWrite(0, ledStateInts[4]);
+    C.portWrite(1, ledStateInts[5]);
+    C.portWrite(2, 4);
+  }
+  else if (row == 35) {
+    C.portWrite(0, ledStateInts[6]);
+    C.portWrite(1, ledStateInts[7]);
+    C.portWrite(2, 8);
+  }
+  else if (row == 36) {
+    C.portWrite(0, ledStateInts[8]);
+    C.portWrite(1, ledStateInts[9]);
+    C.portWrite(2, 16);
+  }*/
 
 }
 
@@ -143,11 +193,12 @@ void Cube::led(boolean state, int level, int pos) {
 
     num = getLedCode(pos);
 
-    if (ledState[state_pos] == !state) {
-        ledStateInts[y] = state ? ledStateInts[y] + num : ledStateInts[y] - num;
+    if (ledState[state_pos] == 1){
+      ledStateInts[y] -= num;
     }
 
     ledState[state_pos] = state;
+
 }
 
 int Cube::getLedCode(int position) {
@@ -184,10 +235,6 @@ void Cube::row(boolean state, char orientation, int plane, int row, int leds) {
     }
 }
 
-void Cube::plane(boolean state, char orientation, int pos) {
-    plane(state, orientation, pos, 0b11111, 0b11111);
-}
-
 void Cube::plane(boolean state, char orientation, int pos, int leds1, int leds2) {
 
     int x = (pos - 1) * 5;
@@ -204,7 +251,7 @@ void Cube::plane(boolean state, char orientation, int pos, int leds1, int leds2)
 }
 
 void Cube::orientation(boolean state, char orientation, int perpenLeds, int leds1, int leds2) {
-    for (int i = 1; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
         int shifted = perpenLeds >> (i - 1);
         int compare = shifted & 1;
         if (compare == 1) {
@@ -213,7 +260,6 @@ void Cube::orientation(boolean state, char orientation, int perpenLeds, int leds
     }
 }
 
-//This function is a little ridiculous
 void Cube::printLetter(char letter, String dir, int _speed){
 
   int int1;
@@ -221,10 +267,6 @@ void Cube::printLetter(char letter, String dir, int _speed){
   int int3;
   int int4;
   int int5;
-
-  int num1;
-  int num2;
-  int num3;
 
   byte _dir;
 

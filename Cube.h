@@ -19,6 +19,7 @@ class Cube {
         void ledOff(int level, int pos);
         void row(boolean state, char orientation, int plane, int row, int leds);
         void plane(boolean state, char orientation, int plane, int leds1, int leds2);
+        void plane(boolean state, char orientation, int pos);
         void orientation(boolean state, char orientation, int perpenLeds, int leds1, int leds2);
         void printLetter(char letter, String dir, int _speed);
     private:
