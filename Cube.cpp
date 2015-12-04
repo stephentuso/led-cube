@@ -1,0 +1,536 @@
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
+#include "Cube.h"
+#include <Wire.h>
+#include <Centipede.h>
+
+Centipede C;
+
+int time = 100;
+
+int row = 32;
+
+boolean toggle0 = 0;
+
+int count = 0;
+
+int ledStateInts[10];
+
+boolean ledState[125];
+
+Cube::Cube() {
+
+}
+
+void Cube::initialize() {
+
+  Wire.begin();
+  TWBR = 12;
+  C.initialize();
+
+  pinMode(13, OUTPUT);
+  C.portMode(0, 0b0000000000000000);
+  C.portMode(1, 0b0000000000000000);
+  C.portMode(2, 0b0000000000000000);
+  C.portMode(3, 0b0000000000000000);
+  allOff();
+  cli();//stop interrupts
+
+  //set timer0 interrupt at 2kHz
+  /*TCCR0A = 0;// set entire TCCR0A register to 0
+   TCCR0B = 0;// same for TCCR0B
+   TCNT0  = 0;//initialize counter value to 0
+   // set compare match register for 2khz increments
+   OCR0A = 249;// = (16*10^6) / (2000*64) - 1 (must be <256)
+   // turn on CTC mode
+   TCCR0A |= (1 << WGM01);
+   // Set CS01 and CS00 bits for 64 prescaler
+   TCCR0B |= (1 << CS01) | (1 << CS00);
+   // enable timer compare interrupt
+   TIMSK0 |= (1 << OCIE0A);*/
+
+  //set timer2 interrupt at 8kHz
+  /*TCCR2A = 0;// set entire TCCR2A register to 0
+   TCCR2B = 0;// same for TCCR2B
+   TCNT2  = 0;//initialize counter value to 0
+   // set compare match register for 8khz increments
+   OCR2A = 249;// = (16*10^6) / (8000*8) - 1 (must be <256)
+   // turn on CTC mode
+   TCCR2A |= (1 << WGM21);
+   // Set CS21 bit for 64 prescaler
+   TCCR2B |= (1 << CS21) | (1 << CS20);
+   // enable timer compare interrupt
+   TIMSK2 |= (1 << OCIE2A);*/
+
+  //set timer1 interrupt at 1Hz
+  TCCR1A = 0;// set entire TCCR1A register to 0
+  TCCR1B = 0;// same for TCCR1B
+  TCNT1  = 0;//initialize counter value to 0
+  // set compare match register for 1hz increments
+  OCR1A = 50;// = (16*10^6) / (1*1024) - 1 (must be <65536)
+  // turn on CTC mode
+  TCCR1B |= (1 << WGM12);
+  // Set CS10 and CS12 bits for 1024 prescaler
+  TCCR1B |= (1 << CS12) | (1 << CS10);
+  // enable timer compare interrupt
+  TIMSK1 |= (1 << OCIE1A);
+
+  sei();//allow interrupts
+
+}
+
+ISR(TIMER1_COMPA_vect){
+
+  sei();
+  if (count == 100){
+    if (toggle0){
+      digitalWrite(13,HIGH);
+      toggle0 = 0;
+    } else {
+      digitalWrite(13,LOW);
+      toggle0 = 1;
+    }
+    count = 0;
+  }
+  count++;
+
+  row++;
+  if (row >= 37) {
+    row = 32;
+  }
+
+  C.portWrite(2, 0);
+
+  int zeroIndexRow = (row - 32);
+  int ledArrIndex = zeroIndexRow * 2;
+
+  C.portWrite(0, ledStateInts[ledArrIndex]);
+  C.portWrite(1, ledStateInts[ledArrIndex + 1]);
+  C.portWrite(2, 1 << zeroIndexRow);
+
+  /*C.portWrite(0, )
+  if (row == 32) {
+    C.portWrite(0, ledStateInts[0]);
+    C.portWrite(1, ledStateInts[1]);
+    C.portWrite(2, 1);
+  }
+  else if (row == 33) {
+    C.portWrite(0, ledStateInts[2]);
+    C.portWrite(1, ledStateInts[3]);
+    C.portWrite(2, 2);
+  }
+  else if (row == 34) {
+    C.portWrite(0, ledStateInts[4]);
+    C.portWrite(1, ledStateInts[5]);
+    C.portWrite(2, 4);
+  }
+  else if (row == 35) {
+    C.portWrite(0, ledStateInts[6]);
+    C.portWrite(1, ledStateInts[7]);
+    C.portWrite(2, 8);
+  }
+  else if (row == 36) {
+    C.portWrite(0, ledStateInts[8]);
+    C.portWrite(1, ledStateInts[9]);
+    C.portWrite(2, 16);
+  }*/
+
+}
+
+void Cube::allOff() {
+
+    for (int i = 0; i < 10; i++) {
+        ledStateInts[i] = 0;
+    }
+
+    for (int a = 0; a < 125; a++){
+        ledState[a] = 0;
+    }
+
+}
+
+void Cube::allOn() {
+
+    for (int i = 0 ; i < 10; i++) {
+        ledStateInts[i] = 0b1111111111111111;
+    }
+
+    for (int a = 0; a < 125; a++){
+        ledState[a] = 1;
+    }
+
+}
+
+void Cube::ledOn(int level, int pos) {
+    int y;
+    int x = 25 * level;
+
+    int num;
+
+    int real_pos = pos;
+
+    int state_pos = (pos - 1) + x;
+
+    if (pos > 15){
+      y = (2 * level) + 1;
+      pos -= 15;
+    }
+    else {
+      y = 2 * level;
+    }
+
+    num = getLedCode(pos);
+
+    if (ledState[state_pos] == 1){
+      ledStateInts[y] -= num;
+    }
+
+    ledState[state_pos] = 1;
+}
+
+void Cube::ledOff(int level, int pos) {
+    int y;
+    int x = 25 * level;
+
+    int num;
+
+    int real_pos = pos;
+
+    int state_pos = (pos - 1) + x;
+
+    if (pos > 15){
+      y = (2 * level) + 1;
+      pos -= 15;
+    }
+    else {
+      y = 2 * level;
+    }
+
+    num = getLedCode(pos);
+
+    if (ledState[state_pos] == 1){
+      ledStateInts[y] -= num;
+    }
+
+    ledState[state_pos] = 0;
+}
+
+void Cube::led(boolean state, int level, int pos) {
+
+    int y;
+    int x = 25 * level;
+
+    int num;
+
+    int real_pos = pos;
+
+    int state_pos = (pos - 1) + x;
+
+    if (pos > 15){
+      y = (2 * level) + 1;
+      pos -= 15;
+    }
+    else {
+      y = 2 * level;
+    }
+
+    num = getLedCode(pos);
+
+    if (ledState[state_pos] == 1){
+      ledStateInts[y] -= num;
+    }
+
+    ledState[state_pos] = state;
+
+}
+
+int Cube::getLedCode(int position) {
+    return position > 0 ? 1 << (position - 1) : 0;
+}
+
+void Cube::row(boolean state, char orientation, int plane, int row, int leds) {
+    int x;
+    int y;
+
+    for (int i = 0; i < 5; i++) {
+
+        switch (orientation) {
+            case 'X':
+                x = plane - 1;
+                y = 1 + ((row - 1) * 5) + i;
+                break;
+            case 'Y':
+                x = i;
+                y = row + ((plane - 1) * 5);
+                break;
+            case 'Z':
+                x = row - 1;
+                y = plane + (5 * i);
+                break;
+        }
+
+        int shifted = leds >> i;
+        int compare = shifted & 1;
+
+        if (compare) {
+            led(state, x, y);
+        }
+    }
+}
+
+void Cube::plane(boolean state, char orientation, int pos, int leds1, int leds2) {
+
+    int x = (pos - 1) * 5;
+
+    for (int i = 1; i < 6; i++){
+
+        int shifted = leds2 >> (i - 1);
+        int compare = shifted & 1;
+
+        if (compare == 1){
+            row(state, orientation, pos, i, leds1);
+        }
+    }
+}
+
+void Cube::orientation(boolean state, char orientation, int perpenLeds, int leds1, int leds2) {
+    for (int i = 0; i < 5; i++) {
+        int shifted = perpenLeds >> (i - 1);
+        int compare = shifted & 1;
+        if (compare == 1) {
+            plane(state, orientation, i, leds1, leds2);
+        }
+    }
+}
+
+void Cube::printLetter(char letter, String dir, int _speed){
+
+  int int1;
+  int int2;
+  int int3;
+  int int4;
+  int int5;
+
+  byte _dir;
+
+  if (dir == "forward"){
+    _dir = 1;
+  } else if (dir == "backward"){
+    _dir = 0;
+  } else if (dir == "static"){
+    _dir = 2;
+  }
+
+  switch(letter){
+    case 'A':
+      int1 = 0b00111;
+      int2 = 0b01010;
+      int3 = 0b10010;
+      int4 = 0b01010;
+      int5 = 0b00111;
+      break;
+    case 'B':
+      int1 = 0b01010;
+      int2 = 0b10101;
+      int3 = 0b10101;
+      int4 = 0b10101;
+      int5 = 0b11111;
+      break;
+    case 'C':
+      int1 = 0b00000;
+      int2 = 0b10001;
+      int3 = 0b10001;
+      int4 = 0b10001;
+      int5 = 0b01110;
+      break;
+    case 'D':
+      int1 = 0b01110;
+      int2 = 0b10001;
+      int3 = 0b10001;
+      int4 = 0b10001;
+      int5 = 0b11111;
+      break;
+    case 'E':
+      int1 = 0b10001;
+      int2 = 0b10101;
+      int3 = 0b10101;
+      int4 = 0b10101;
+      int5 = 0b11111;
+      break;
+    case 'F':
+      int1 = 0b10000;
+      int2 = 0b10100;
+      int3 = 0b10100;
+      int4 = 0b10100;
+      int5 = 0b11111;
+      break;
+    case 'G':
+      int1 = 0b00110;
+      int2 = 0b10101;
+      int3 = 0b10101;
+      int4 = 0b10001;
+      int5 = 0b01110;
+      break;
+    case 'H':
+      int1 = 0b11111;
+      int2 = 0b00100;
+      int3 = 0b00100;
+      int4 = 0b00100;
+      int5 = 0b11111;
+      break;
+    case 'I':
+      int1 = 0b10001;
+      int2 = 0b10001;
+      int3 = 0b11111;
+      int4 = 0b10001;
+      int5 = 0b10001;
+      break;
+    case 'J':
+      int1 = 0b11110;
+      int2 = 0b00001;
+      int3 = 0b00001;
+      int4 = 0b00001;
+      int5 = 0b00010;
+      break;
+    case 'K':
+      int1 = 0b10001;
+      int2 = 0b01010;
+      int3 = 0b00100;
+      int4 = 0b00100;
+      int5 = 0b11111;
+      break;
+    case 'L':
+      int1 = 0b00001;
+      int2 = 0b00001;
+      int3 = 0b00001;
+      int4 = 0b00001;
+      int5 = 0b11111;
+      break;
+    case 'M':
+      int1 = 0b11111;
+      int2 = 0b01000;
+      int3 = 0b00100;
+      int4 = 0b01000;
+      int5 = 0b11111;
+      break;
+    case 'N':
+      int1 = 0b11111;
+      int2 = 0b00010;
+      int3 = 0b00100;
+      int4 = 0b01000;
+      int5 = 0b11111;
+      break;
+    case 'O':
+      int1 = 0b01110;
+      int2 = 0b10001;
+      int3 = 0b10001;
+      int4 = 0b10001;
+      int5 = 0b01110;
+      break;
+    case 'P':
+      int1 = 0b11100;
+      int2 = 0b10100;
+      int3 = 0b10100;
+      int4 = 0b10100;
+      int5 = 0b11111;
+      break;
+    case 'Q':
+      int1 = 0b01111;
+      int2 = 0b10011;
+      int3 = 0b10101;
+      int4 = 0b10001;
+      int5 = 0b01110;
+      break;
+    case 'R':
+      int1 = 0b11101;
+      int2 = 0b10110;
+      int3 = 0b10100;
+      int4 = 0b10100;
+      int5 = 0b11111;
+      break;
+    case 'S':
+      int1 = 0b10111;
+      int2 = 0b10101;
+      int3 = 0b10101;
+      int4 = 0b10101;
+      int5 = 0b11101;
+      break;
+    case 'T':
+      int1 = 0b10000;
+      int2 = 0b10000;
+      int3 = 0b11111;
+      int4 = 0b10000;
+      int5 = 0b10000;
+      break;
+    case 'U':
+      int1 = 0b11110;
+      int2 = 0b00001;
+      int3 = 0b00001;
+      int4 = 0b00001;
+      int5 = 0b11110;
+      break;
+    case 'V':
+      int1 = 0b11100;
+      int2 = 0b00010;
+      int3 = 0b00001;
+      int4 = 0b00010;
+      int5 = 0b11100;
+      break;
+    case 'W':
+      int1 = 0b11110;
+      int2 = 0b00001;
+      int3 = 0b11110;
+      int4 = 0b00001;
+      int5 = 0b11110;
+      break;
+    case 'X':
+      int1 = 0b10001;
+      int2 = 0b01010;
+      int3 = 0b00100;
+      int4 = 0b01010;
+      int5 = 0b10001;
+      break;
+    case 'Y':
+      int1 = 0b10000;
+      int2 = 0b01000;
+      int3 = 0b00111;
+      int4 = 0b01000;
+      int5 = 0b10000;
+      break;
+    case 'Z':
+      int1 = 0b10001;
+      int2 = 0b11001;
+      int3 = 0b10101;
+      int4 = 0b10011;
+      int5 = 0b10001;
+      break;
+  }
+
+  int intArr[] = {int1, int2, int3, int4, int5};
+
+  for (int a = 1; a < 6; a++){
+      int plane;
+
+    switch (_dir){
+        case 1:
+            plane = a;
+            break;
+        case 0:
+            plane = 6 - a;
+            break;
+        case 2:
+            plane = 5;
+            break;
+    }
+
+    for (int j = 0; j < 5; j++) {
+        row(true, 'Y', plane, j, intArr[j]);
+    }
+
+    delay(_speed);
+    allOff();
+  }
+}
