@@ -174,11 +174,8 @@ void Cube::row(boolean state, char orientation, int plane, int row, int leds) {
                 y = plane + (5 * i);
                 break;
         }
-
-        int shifted = leds >> i;
-        int compare = shifted & 1;
-
-        if (compare) {
+        bool present = ledPresent(i, leds);
+        if (present) {
             led(state, x, y);
         }
     }
@@ -193,11 +190,8 @@ void Cube::plane(boolean state, char orientation, int pos, int leds1, int leds2)
     int x = (pos - 1) * 5;
 
     for (int i = 1; i < 6; i++){
-
-        int shifted = leds2 >> (i - 1);
-        int compare = shifted & 1;
-
-        if (compare == 1){
+        bool present = ledPresent(i-1, leds2);
+        if (present){
             row(state, orientation, pos, i, leds1);
         }
     }
@@ -205,12 +199,16 @@ void Cube::plane(boolean state, char orientation, int pos, int leds1, int leds2)
 
 void Cube::orientation(boolean state, char orientation, int perpenLeds, int leds1, int leds2) {
     for (int i = 1; i < 6; i++) {
-        int shifted = perpenLeds >> (i - 1);
-        int compare = shifted & 1;
-        if (compare == 1) {
+        bool present = ledPresent(i-1, perpenLeds);
+        if (present) {
             plane(state, orientation, i, leds1, leds2);
         }
     }
+}
+
+boolean Cube::ledPresent(int index, int ledStateInt) {
+    int shifted = ledStateInt >> index;
+    return (shifted & 1) == 1;
 }
 
 //This function is a little ridiculous

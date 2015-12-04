@@ -24,6 +24,7 @@ class Cube {
         void printLetter(char letter, String dir, int _speed);
     private:
         int getLedCode(int position);
+        boolean ledPresent(int ledStateInt, int index);
 };
 
 #endif
