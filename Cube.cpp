@@ -212,7 +212,7 @@ boolean Cube::ledPresent(int index, int ledStateInt) {
 }
 
 //This function is a little ridiculous
-void Cube::printLetter(char letter, String dir, int _speed){
+void Cube::printCharacter(charcharacter, String dir, int _speed){
 
   int int1;
   int int2;
@@ -234,7 +234,7 @@ void Cube::printLetter(char letter, String dir, int _speed){
     _dir = 2;
   }
 
-  switch(letter){
+  switch(character){
     case 'A':
       int1 = 0b00111;
       int2 = 0b01010;
@@ -417,6 +417,89 @@ void Cube::printLetter(char letter, String dir, int _speed){
       int4 = 0b10011;
       int5 = 0b10001;
       break;
+    case '0':
+      int1 = 0b00000;
+      int2 = 0b11111;
+      int3 = 0b10001;
+      int4 = 0b11111;
+      int5 = 0b00000;
+      break;
+    case '1':
+      int1 = 0b00000;
+      int2 = 0b00001;
+      int3 = 0b11111;
+      int4 = 0b00001;
+      int5 = 0b00000;
+      break;
+    case '2':
+      int1 = 0b00000;
+      int2 = 0b01001;
+      int3 = 0b10101;
+      int4 = 0b10011;
+      int5 = 0b10001;
+      break;
+    case '3':
+      int1 = 0b11111;
+      int2 = 0b10101;
+      int3 = 0b10101;
+      int4 = 0b10101;
+      int5 = 0b10001;
+      break;
+    case '4':
+      int1 = 0b00000;
+      int2 = 0b11111;
+      int3 = 0b00100;
+      int4 = 0b11100;
+      int5 = 0b00000;
+      break;
+    case '5':
+      int1 = 0b10010;
+      int2 = 0b10101;
+      int3 = 0b10101;
+      int4 = 0b10101;
+      int5 = 0b11101;
+      break;
+    case '6':
+      int1 = 0b00000;
+      int2 = 0b10111;
+      int3 = 0b10101;
+      int4 = 0b11111;
+      int5 = 0b00000;
+      break;
+    case '7':
+      int1 = 0b10000;
+      int2 = 0b11000;
+      int3 = 0b10100;
+      int4 = 0b10011;
+      int5 = 0b10000;
+      break;
+    case '8':
+      int1 = 0b00000;
+      int2 = 0b11111;
+      int3 = 0b10101;
+      int4 = 0b11111;
+      int5 = 0b00000;
+      break;
+    case '9':
+      int1 = 0b00000;
+      int2 = 0b11111;
+      int3 = 0b10100;
+      int4 = 0b11100;
+      int5 = 0b00000;
+      break;
+    case '°':
+      int1 = 0b11000;
+      int2 = 0b11000;
+      int3 = 0b00000;
+      int4 = 0b00000;
+      int5 = 0b00000;
+      break;
+    default:
+      int1 = 0b01000;
+      int2 = 0b10100;
+      int3 = 0b10111;
+      int4 = 0b10000;
+      int5 = 0b10000;
   }
 
   int intArr[] = {int1, int2, int3, int4, int5};
