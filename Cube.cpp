@@ -451,11 +451,11 @@ void Cube::printCharacter(char character, String dir, int _speed){
       int5 = 0b10001;
       break;
     case '4':
-      int1 = 0b00000;
-      int2 = 0b11111;
+      int1 = 0b11111;
+      int2 = 0b00100;
       int3 = 0b00100;
-      int4 = 0b11100;
-      int5 = 0b00000;
+      int4 = 0b00100;
+      int5 = 0b11100;
       break;
     case '5':
       int1 = 0b10010;
@@ -465,11 +465,11 @@ void Cube::printCharacter(char character, String dir, int _speed){
       int5 = 0b11101;
       break;
     case '6':
-      int1 = 0b00000;
-      int2 = 0b10111;
+      int1 = 0b10111;
+      int2 = 0b10101;
       int3 = 0b10101;
-      int4 = 0b11111;
-      int5 = 0b00000;
+      int4 = 0b10101;
+      int5 = 0b11111;
       break;
     case '7':
       int1 = 0b10000;
@@ -479,17 +479,24 @@ void Cube::printCharacter(char character, String dir, int _speed){
       int5 = 0b10000;
       break;
     case '8':
-      int1 = 0b00000;
-      int2 = 0b11111;
+      int1 = 0b01010;
+      int2 = 0b10101;
       int3 = 0b10101;
-      int4 = 0b11111;
-      int5 = 0b00000;
+      int4 = 0b10101;
+      int5 = 0b01010;
       break;
     case '9':
       int1 = 0b00000;
       int2 = 0b11111;
       int3 = 0b10100;
       int4 = 0b11100;
+      int5 = 0b00000;
+      break;
+    case '.':
+      int1 = 0b00000;
+      int2 = 0b00000;
+      int3 = 0b00001;
+      int4 = 0b00000;
       int5 = 0b00000;
       break;
     case '\370':
