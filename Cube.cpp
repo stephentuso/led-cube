@@ -492,7 +492,7 @@ void Cube::printCharacter(char character, String dir, int _speed){
       int4 = 0b11100;
       int5 = 0b00000;
       break;
-    case '°':
+    case '\370':
       int1 = 0b11000;
       int2 = 0b11000;
       int3 = 0b00000;
