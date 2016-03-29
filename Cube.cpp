@@ -212,7 +212,7 @@ boolean Cube::ledPresent(int index, int ledStateInt) {
 }
 
 //This function is a little ridiculous
-void Cube::printCharacter(charcharacter, String dir, int _speed){
+void Cube::printCharacter(char character, String dir, int _speed){
 
   int int1;
   int int2;
