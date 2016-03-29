@@ -211,13 +211,19 @@ boolean Cube::ledPresent(int index, int ledStateInt) {
     return (shifted & 1) == 1;
 }
 
+void Cube::printString(String word, String dir, int _speed) {
+  for (int i = 0; i < word.length; i++) {
+    printCharacter(word[i], dir, _speed);
+  }
+}
+
 void Cube::printCharacter(char character, String dir, int _speed){
 
-  int int1;
-  int int2;
-  int int3;
-  int int4;
-  int int5;
+  int int1 = 0;
+  int int2 = 0;
+  int int3 = 0;
+  int int4 = 0;
+  int int5 = 0;
 
   int num1;
   int num2;
@@ -493,6 +499,8 @@ void Cube::printCharacter(char character, String dir, int _speed){
       int4 = 0b00000;
       int5 = 0b00000;
       break;
+    case ' ':
+      break;
     default:
       int1 = 0b01000;
       int2 = 0b10100;
@@ -519,7 +527,7 @@ void Cube::printCharacter(char character, String dir, int _speed){
     }
 
     for (int j = 0; j < 5; j++) {
-        row(true, 'Y', plane, j, intArr[j]);
+        row(true, 'Y', plane, j+1, intArr[j]);
     }
 
     delay(_speed);
