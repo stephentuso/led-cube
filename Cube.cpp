@@ -212,8 +212,8 @@ boolean Cube::ledPresent(int index, int ledStateInt) {
 }
 
 void Cube::printString(String word, String dir, int _speed) {
-  for (int i = 0; i < word.length; i++) {
-    printCharacter(word[i], dir, _speed);
+  for (int i = 0; i < word.length(); i++) {
+    printCharacter(word.charAt(i), dir, _speed);
   }
 }
 
