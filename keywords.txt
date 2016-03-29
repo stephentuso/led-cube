@@ -15,4 +15,4 @@ planeXOn	KEYWORD2
 planeXOff	KEYWORD2
 planeZOn	KEYWORD2
 planeZOff	KEYWORD2
-printLetter	KEYWORD2
+printCharacter	KEYWORD2
