@@ -7,7 +7,7 @@
 #include <Wire.h>
 #include <Centipede.h>
 
-// This was one of my first programming projects, I'm wondering why I made layers zero-indexed and everything else one-indexed
+// I'm wondering why I made layers zero-indexed and everything else one-indexed
 // TODO: Fix that^ ? And maybe improve the way letters are printed ? Use less for loops possibly?
 
 Centipede C;
@@ -211,7 +211,6 @@ boolean Cube::ledPresent(int index, int ledStateInt) {
     return (shifted & 1) == 1;
 }
 
-//This function is a little ridiculous
 void Cube::printCharacter(char character, String dir, int _speed){
 
   int int1;
