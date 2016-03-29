@@ -506,7 +506,7 @@ void Cube::printCharacter(char character, String dir, int _speed){
       int2 = 0b10100;
       int3 = 0b10111;
       int4 = 0b10000;
-      int5 = 0b10000;
+      int5 = 0b01000;
   }
 
   int intArr[] = {int1, int2, int3, int4, int5};
