@@ -21,7 +21,7 @@ class Cube {
         void plane(boolean state, char orientation, int plane, int leds1, int leds2);
         void plane(boolean state, char orientation, int pos);
         void orientation(boolean state, char orientation, int perpenLeds, int leds1, int leds2);
-        void printLetter(char letter, String dir, int _speed);
+        void printCharacter(char letter, String dir, int _speed);
     private:
         int getLedCode(int position);
         boolean ledPresent(int ledStateInt, int index);
