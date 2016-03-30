@@ -500,11 +500,11 @@ void Cube::printCharacter(char character, String dir, int _speed){
       int5 = 0b00000;
       break;
     case '%':
-      int1 = 0b10011;
-      int2 = 0b01011;
+      int1 = 0b10001;
+      int2 = 0b01000;
       int3 = 0b00100;
-      int4 = 0b11010;
-      int5 = 0b11001;
+      int4 = 0b00010;
+      int5 = 0b10001;
       break;
     case 'o': // use o for degree
       int1 = 0b11000;
