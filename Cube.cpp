@@ -250,7 +250,7 @@ void Cube::printCharacter(char character, String dir, int _speed){
   for (int a = 1; a < 6; a++){
     int position = getPositionForDirection(_dir, a);
 
-    plane(true, 'Y', p, intArr);
+    plane(true, 'Y', position, intArr);
 
     delay(_speed);
     allOff();
@@ -258,6 +258,9 @@ void Cube::printCharacter(char character, String dir, int _speed){
 }
 
 void Cube::printString(String word, String dir, int _speed) {
+
+  byte _dir = getDirFromString(dir);
+  int startPos = getPositionForDirection(_dir, 1);
 
   if (word.length() == 0) {
       return;
@@ -267,7 +270,7 @@ void Cube::printString(String word, String dir, int _speed) {
   int nextLetter [5];
 
   fillArrayForCharacter(currentLetter, word.charAt(0));
-  plane(true, 'Y', 1, currentLetter);
+  plane(true, 'Y', startPos, currentLetter);
 
   for (int i = 0; i < word.length(); i++) {
     fillArrayForCharacter(currentLetter, word.charAt(i));
@@ -278,9 +281,12 @@ void Cube::printString(String word, String dir, int _speed) {
     }
 
     for (int j = 2; j < 6; j++) {
-        plane(true, 'Y', j, currentLetter);
+
+        int position = getPositionForDirection(_dir, j)
+
+        plane(true, 'Y', position, currentLetter);
         if (j == 5) {
-            plane(true, 'Y', 1, nextLetter);
+            plane(true, 'Y', startPos, nextLetter);
         }
         delay(_speed);
         allOff();
