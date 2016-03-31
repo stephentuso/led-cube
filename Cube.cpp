@@ -237,21 +237,21 @@ void Cube::printCharacter(char character, String dir, int _speed){
   fillArrayForCharacter(intArr, character);
 
   for (int a = 1; a < 6; a++){
-    int plane;
+    int p;
 
     switch (_dir){
         case 1:
-            plane = a;
+            p = a;
             break;
         case 0:
-            plane = 6 - a;
+            p = 6 - a;
             break;
         case 2:
-            plane = 5;
+            p = 5;
             break;
     }
 
-    plane(true, 'Y', plane, intArr);
+    plane(true, 'Y', p, intArr);
 
     delay(_speed);
     allOff();
