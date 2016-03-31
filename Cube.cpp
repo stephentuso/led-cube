@@ -185,6 +185,12 @@ void Cube::plane(boolean state, char orientation, int pos) {
     plane(state, orientation, pos, 0b11111, 0b11111);
 }
 
+void Cube::plane(boolean state, char orientation, int pos, int arr[]) {
+    for (int i = 0; i < 5; i++) {
+        row(state, orientation, pos, i+1, arr[i]);
+    }
+}
+
 void Cube::plane(boolean state, char orientation, int pos, int leds1, int leds2) {
 
     int x = (pos - 1) * 5;
@@ -211,322 +217,27 @@ boolean Cube::ledPresent(int index, int ledStateInt) {
     return (shifted & 1) == 1;
 }
 
-void Cube::printString(String word, String dir, int _speed) {
-  for (int i = 0; i < word.length(); i++) {
-    printCharacter(word.charAt(i), dir, _speed);
-  }
+byte Cube::getDirFromString(String dir) {
+    byte _dir;
+    if (dir == "forward") {
+      return 1;
+    } else if (dir == "backward"){
+      _dir = 0;
+    } else if (dir == "static"){
+      _dir = 2;
+    }
+    return _dir;
 }
 
 void Cube::printCharacter(char character, String dir, int _speed){
 
-  int int1 = 0;
-  int int2 = 0;
-  int int3 = 0;
-  int int4 = 0;
-  int int5 = 0;
+  byte _dir = getDirFromString(dir);
 
-  int num1;
-  int num2;
-  int num3;
-
-  byte _dir;
-
-  if (dir == "forward"){
-    _dir = 1;
-  } else if (dir == "backward"){
-    _dir = 0;
-  } else if (dir == "static"){
-    _dir = 2;
-  }
-
-  switch(character){
-    case 'A':
-      int1 = 0b00111;
-      int2 = 0b01010;
-      int3 = 0b10010;
-      int4 = 0b01010;
-      int5 = 0b00111;
-      break;
-    case 'B':
-      int1 = 0b01010;
-      int2 = 0b10101;
-      int3 = 0b10101;
-      int4 = 0b10101;
-      int5 = 0b11111;
-      break;
-    case 'C':
-      int1 = 0b00000;
-      int2 = 0b10001;
-      int3 = 0b10001;
-      int4 = 0b10001;
-      int5 = 0b01110;
-      break;
-    case 'D':
-      int1 = 0b01110;
-      int2 = 0b10001;
-      int3 = 0b10001;
-      int4 = 0b10001;
-      int5 = 0b11111;
-      break;
-    case 'E':
-      int1 = 0b10001;
-      int2 = 0b10101;
-      int3 = 0b10101;
-      int4 = 0b10101;
-      int5 = 0b11111;
-      break;
-    case 'F':
-      int1 = 0b10000;
-      int2 = 0b10100;
-      int3 = 0b10100;
-      int4 = 0b10100;
-      int5 = 0b11111;
-      break;
-    case 'G':
-      int1 = 0b00110;
-      int2 = 0b10101;
-      int3 = 0b10101;
-      int4 = 0b10001;
-      int5 = 0b01110;
-      break;
-    case 'H':
-      int1 = 0b11111;
-      int2 = 0b00100;
-      int3 = 0b00100;
-      int4 = 0b00100;
-      int5 = 0b11111;
-      break;
-    case 'I':
-      int1 = 0b10001;
-      int2 = 0b10001;
-      int3 = 0b11111;
-      int4 = 0b10001;
-      int5 = 0b10001;
-      break;
-    case 'J':
-      int1 = 0b11110;
-      int2 = 0b00001;
-      int3 = 0b00001;
-      int4 = 0b00001;
-      int5 = 0b00010;
-      break;
-    case 'K':
-      int1 = 0b10001;
-      int2 = 0b01010;
-      int3 = 0b00100;
-      int4 = 0b00100;
-      int5 = 0b11111;
-      break;
-    case 'L':
-      int1 = 0b00001;
-      int2 = 0b00001;
-      int3 = 0b00001;
-      int4 = 0b00001;
-      int5 = 0b11111;
-      break;
-    case 'M':
-      int1 = 0b11111;
-      int2 = 0b01000;
-      int3 = 0b00100;
-      int4 = 0b01000;
-      int5 = 0b11111;
-      break;
-    case 'N':
-      int1 = 0b11111;
-      int2 = 0b00010;
-      int3 = 0b00100;
-      int4 = 0b01000;
-      int5 = 0b11111;
-      break;
-    case 'O':
-      int1 = 0b01110;
-      int2 = 0b10001;
-      int3 = 0b10001;
-      int4 = 0b10001;
-      int5 = 0b01110;
-      break;
-    case 'P':
-      int1 = 0b11100;
-      int2 = 0b10100;
-      int3 = 0b10100;
-      int4 = 0b10100;
-      int5 = 0b11111;
-      break;
-    case 'Q':
-      int1 = 0b01111;
-      int2 = 0b10011;
-      int3 = 0b10101;
-      int4 = 0b10001;
-      int5 = 0b01110;
-      break;
-    case 'R':
-      int1 = 0b11101;
-      int2 = 0b10110;
-      int3 = 0b10100;
-      int4 = 0b10100;
-      int5 = 0b11111;
-      break;
-    case 'S':
-      int1 = 0b10111;
-      int2 = 0b10101;
-      int3 = 0b10101;
-      int4 = 0b10101;
-      int5 = 0b11101;
-      break;
-    case 'T':
-      int1 = 0b10000;
-      int2 = 0b10000;
-      int3 = 0b11111;
-      int4 = 0b10000;
-      int5 = 0b10000;
-      break;
-    case 'U':
-      int1 = 0b11110;
-      int2 = 0b00001;
-      int3 = 0b00001;
-      int4 = 0b00001;
-      int5 = 0b11110;
-      break;
-    case 'V':
-      int1 = 0b11100;
-      int2 = 0b00010;
-      int3 = 0b00001;
-      int4 = 0b00010;
-      int5 = 0b11100;
-      break;
-    case 'W':
-      int1 = 0b11110;
-      int2 = 0b00001;
-      int3 = 0b11110;
-      int4 = 0b00001;
-      int5 = 0b11110;
-      break;
-    case 'X':
-      int1 = 0b10001;
-      int2 = 0b01010;
-      int3 = 0b00100;
-      int4 = 0b01010;
-      int5 = 0b10001;
-      break;
-    case 'Y':
-      int1 = 0b10000;
-      int2 = 0b01000;
-      int3 = 0b00111;
-      int4 = 0b01000;
-      int5 = 0b10000;
-      break;
-    case 'Z':
-      int1 = 0b10001;
-      int2 = 0b11001;
-      int3 = 0b10101;
-      int4 = 0b10011;
-      int5 = 0b10001;
-      break;
-    case '0':
-      int1 = 0b00000;
-      int2 = 0b11111;
-      int3 = 0b10001;
-      int4 = 0b11111;
-      int5 = 0b00000;
-      break;
-    case '1':
-      int1 = 0b00000;
-      int2 = 0b00001;
-      int3 = 0b11111;
-      int4 = 0b00001;
-      int5 = 0b00000;
-      break;
-    case '2':
-      int1 = 0b00000;
-      int2 = 0b01001;
-      int3 = 0b10101;
-      int4 = 0b10011;
-      int5 = 0b10001;
-      break;
-    case '3':
-      int1 = 0b11111;
-      int2 = 0b10101;
-      int3 = 0b10101;
-      int4 = 0b10101;
-      int5 = 0b10001;
-      break;
-    case '4':
-      int1 = 0b11111;
-      int2 = 0b00100;
-      int3 = 0b00100;
-      int4 = 0b00100;
-      int5 = 0b11100;
-      break;
-    case '5':
-      int1 = 0b10010;
-      int2 = 0b10101;
-      int3 = 0b10101;
-      int4 = 0b10101;
-      int5 = 0b11101;
-      break;
-    case '6':
-      int1 = 0b10111;
-      int2 = 0b10101;
-      int3 = 0b10101;
-      int4 = 0b10101;
-      int5 = 0b11111;
-      break;
-    case '7':
-      int1 = 0b10000;
-      int2 = 0b11000;
-      int3 = 0b10100;
-      int4 = 0b10011;
-      int5 = 0b10000;
-      break;
-    case '8':
-      int1 = 0b01010;
-      int2 = 0b10101;
-      int3 = 0b10101;
-      int4 = 0b10101;
-      int5 = 0b01010;
-      break;
-    case '9':
-      int1 = 0b00000;
-      int2 = 0b11111;
-      int3 = 0b10100;
-      int4 = 0b11100;
-      int5 = 0b00000;
-      break;
-    case '.':
-      int1 = 0b00000;
-      int2 = 0b00000;
-      int3 = 0b00001;
-      int4 = 0b00000;
-      int5 = 0b00000;
-      break;
-    case '%':
-      int1 = 0b10001;
-      int2 = 0b01000;
-      int3 = 0b00100;
-      int4 = 0b00010;
-      int5 = 0b10001;
-      break;
-    case 'o': // use o for degree
-      int1 = 0b11000;
-      int2 = 0b11000;
-      int3 = 0b00000;
-      int4 = 0b00000;
-      int5 = 0b00000;
-      break;
-    case ' ':
-      break;
-    default:
-      int1 = 0b01000;
-      int2 = 0b10100;
-      int3 = 0b10111;
-      int4 = 0b10000;
-      int5 = 0b01000;
-  }
-
-  int intArr[] = {int1, int2, int3, int4, int5};
+  int intArr [5];
+  fillArrayForCharacter(intArr, character);
 
   for (int a = 1; a < 6; a++){
-      int plane;
+    int plane;
 
     switch (_dir){
         case 1:
@@ -540,11 +251,313 @@ void Cube::printCharacter(char character, String dir, int _speed){
             break;
     }
 
-    for (int j = 0; j < 5; j++) {
-        row(true, 'Y', plane, j+1, intArr[j]);
-    }
+    plane(true, 'Y', plane, intArr);
 
     delay(_speed);
     allOff();
   }
+}
+
+void Cube::printString(String word, String dir, int _speed) {
+  for (int i = 0; i < word.length(); i++) {
+    printCharacter(word.charAt(i), dir, _speed);
+  }
+}
+
+void Cube::fillArrayForCharacter(int array[], char character) {
+    int int1 = 0;
+    int int2 = 0;
+    int int3 = 0;
+    int int4 = 0;
+    int int5 = 0;
+
+    switch(character){
+      case 'A':
+        int1 = 0b00111;
+        int2 = 0b01010;
+        int3 = 0b10010;
+        int4 = 0b01010;
+        int5 = 0b00111;
+        break;
+      case 'B':
+        int1 = 0b01010;
+        int2 = 0b10101;
+        int3 = 0b10101;
+        int4 = 0b10101;
+        int5 = 0b11111;
+        break;
+      case 'C':
+        int1 = 0b00000;
+        int2 = 0b10001;
+        int3 = 0b10001;
+        int4 = 0b10001;
+        int5 = 0b01110;
+        break;
+      case 'D':
+        int1 = 0b01110;
+        int2 = 0b10001;
+        int3 = 0b10001;
+        int4 = 0b10001;
+        int5 = 0b11111;
+        break;
+      case 'E':
+        int1 = 0b10001;
+        int2 = 0b10101;
+        int3 = 0b10101;
+        int4 = 0b10101;
+        int5 = 0b11111;
+        break;
+      case 'F':
+        int1 = 0b10000;
+        int2 = 0b10100;
+        int3 = 0b10100;
+        int4 = 0b10100;
+        int5 = 0b11111;
+        break;
+      case 'G':
+        int1 = 0b00110;
+        int2 = 0b10101;
+        int3 = 0b10101;
+        int4 = 0b10001;
+        int5 = 0b01110;
+        break;
+      case 'H':
+        int1 = 0b11111;
+        int2 = 0b00100;
+        int3 = 0b00100;
+        int4 = 0b00100;
+        int5 = 0b11111;
+        break;
+      case 'I':
+        int1 = 0b10001;
+        int2 = 0b10001;
+        int3 = 0b11111;
+        int4 = 0b10001;
+        int5 = 0b10001;
+        break;
+      case 'J':
+        int1 = 0b11110;
+        int2 = 0b00001;
+        int3 = 0b00001;
+        int4 = 0b00001;
+        int5 = 0b00010;
+        break;
+      case 'K':
+        int1 = 0b10001;
+        int2 = 0b01010;
+        int3 = 0b00100;
+        int4 = 0b00100;
+        int5 = 0b11111;
+        break;
+      case 'L':
+        int1 = 0b00001;
+        int2 = 0b00001;
+        int3 = 0b00001;
+        int4 = 0b00001;
+        int5 = 0b11111;
+        break;
+      case 'M':
+        int1 = 0b11111;
+        int2 = 0b01000;
+        int3 = 0b00100;
+        int4 = 0b01000;
+        int5 = 0b11111;
+        break;
+      case 'N':
+        int1 = 0b11111;
+        int2 = 0b00010;
+        int3 = 0b00100;
+        int4 = 0b01000;
+        int5 = 0b11111;
+        break;
+      case 'O':
+        int1 = 0b01110;
+        int2 = 0b10001;
+        int3 = 0b10001;
+        int4 = 0b10001;
+        int5 = 0b01110;
+        break;
+      case 'P':
+        int1 = 0b11100;
+        int2 = 0b10100;
+        int3 = 0b10100;
+        int4 = 0b10100;
+        int5 = 0b11111;
+        break;
+      case 'Q':
+        int1 = 0b01111;
+        int2 = 0b10011;
+        int3 = 0b10101;
+        int4 = 0b10001;
+        int5 = 0b01110;
+        break;
+      case 'R':
+        int1 = 0b11101;
+        int2 = 0b10110;
+        int3 = 0b10100;
+        int4 = 0b10100;
+        int5 = 0b11111;
+        break;
+      case 'S':
+        int1 = 0b10111;
+        int2 = 0b10101;
+        int3 = 0b10101;
+        int4 = 0b10101;
+        int5 = 0b11101;
+        break;
+      case 'T':
+        int1 = 0b10000;
+        int2 = 0b10000;
+        int3 = 0b11111;
+        int4 = 0b10000;
+        int5 = 0b10000;
+        break;
+      case 'U':
+        int1 = 0b11110;
+        int2 = 0b00001;
+        int3 = 0b00001;
+        int4 = 0b00001;
+        int5 = 0b11110;
+        break;
+      case 'V':
+        int1 = 0b11100;
+        int2 = 0b00010;
+        int3 = 0b00001;
+        int4 = 0b00010;
+        int5 = 0b11100;
+        break;
+      case 'W':
+        int1 = 0b11110;
+        int2 = 0b00001;
+        int3 = 0b11110;
+        int4 = 0b00001;
+        int5 = 0b11110;
+        break;
+      case 'X':
+        int1 = 0b10001;
+        int2 = 0b01010;
+        int3 = 0b00100;
+        int4 = 0b01010;
+        int5 = 0b10001;
+        break;
+      case 'Y':
+        int1 = 0b10000;
+        int2 = 0b01000;
+        int3 = 0b00111;
+        int4 = 0b01000;
+        int5 = 0b10000;
+        break;
+      case 'Z':
+        int1 = 0b10001;
+        int2 = 0b11001;
+        int3 = 0b10101;
+        int4 = 0b10011;
+        int5 = 0b10001;
+        break;
+      case '0':
+        int1 = 0b00000;
+        int2 = 0b11111;
+        int3 = 0b10001;
+        int4 = 0b11111;
+        int5 = 0b00000;
+        break;
+      case '1':
+        int1 = 0b00000;
+        int2 = 0b00001;
+        int3 = 0b11111;
+        int4 = 0b00001;
+        int5 = 0b00000;
+        break;
+      case '2':
+        int1 = 0b00000;
+        int2 = 0b01001;
+        int3 = 0b10101;
+        int4 = 0b10011;
+        int5 = 0b10001;
+        break;
+      case '3':
+        int1 = 0b11111;
+        int2 = 0b10101;
+        int3 = 0b10101;
+        int4 = 0b10101;
+        int5 = 0b10001;
+        break;
+      case '4':
+        int1 = 0b11111;
+        int2 = 0b00100;
+        int3 = 0b00100;
+        int4 = 0b00100;
+        int5 = 0b11100;
+        break;
+      case '5':
+        int1 = 0b10010;
+        int2 = 0b10101;
+        int3 = 0b10101;
+        int4 = 0b10101;
+        int5 = 0b11101;
+        break;
+      case '6':
+        int1 = 0b10111;
+        int2 = 0b10101;
+        int3 = 0b10101;
+        int4 = 0b10101;
+        int5 = 0b11111;
+        break;
+      case '7':
+        int1 = 0b10000;
+        int2 = 0b11000;
+        int3 = 0b10100;
+        int4 = 0b10011;
+        int5 = 0b10000;
+        break;
+      case '8':
+        int1 = 0b01010;
+        int2 = 0b10101;
+        int3 = 0b10101;
+        int4 = 0b10101;
+        int5 = 0b01010;
+        break;
+      case '9':
+        int1 = 0b00000;
+        int2 = 0b11111;
+        int3 = 0b10100;
+        int4 = 0b11100;
+        int5 = 0b00000;
+        break;
+      case '.':
+        int1 = 0b00000;
+        int2 = 0b00000;
+        int3 = 0b00001;
+        int4 = 0b00000;
+        int5 = 0b00000;
+        break;
+      case '%':
+        int1 = 0b10001;
+        int2 = 0b01000;
+        int3 = 0b00100;
+        int4 = 0b00010;
+        int5 = 0b10001;
+        break;
+      case 'o': // use o for degree
+        int1 = 0b11000;
+        int2 = 0b11000;
+        int3 = 0b00000;
+        int4 = 0b00000;
+        int5 = 0b00000;
+        break;
+      case ' ':
+        break;
+      default:
+        int1 = 0b01000;
+        int2 = 0b10100;
+        int3 = 0b10111;
+        int4 = 0b10000;
+        int5 = 0b01000;
+    }
+
+    array[0] = int1;
+    array[1] = int2;
+    array[2] = int3;
+    array[3] = int4;
+    array[4] = int5;
 }
