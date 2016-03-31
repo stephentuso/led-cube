@@ -282,7 +282,7 @@ void Cube::printString(String word, String dir, int _speed) {
 
     for (int j = 2; j < 6; j++) {
 
-        int position = getPositionForDirection(_dir, j)
+        int position = getPositionForDirection(_dir, j);
 
         plane(true, 'Y', position, currentLetter);
         if (j == 5) {
