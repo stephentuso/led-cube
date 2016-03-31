@@ -271,6 +271,8 @@ void Cube::printString(String word, String dir, int _speed) {
 
   fillArrayForCharacter(currentLetter, word.charAt(0));
   plane(true, 'Y', startPos, currentLetter);
+  delay(_speed);
+  allOff();
 
   for (int i = 0; i < word.length(); i++) {
     fillArrayForCharacter(currentLetter, word.charAt(i));
