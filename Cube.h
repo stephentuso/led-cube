@@ -30,6 +30,7 @@ class Cube {
         int getLedCode(int position);
         boolean ledPresent(int ledStateInt, int index);
         byte getDirFromString(String dir);
+        int getPositionForDirection(byte dir, int index);
 };
 
 #endif
