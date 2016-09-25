@@ -7,9 +7,6 @@
 #include <Wire.h>
 #include <Centipede.h>
 
-// I'm wondering why I made layers zero-indexed and everything else one-indexed
-// TODO: Fix that^ ? And maybe improve the way letters are printed ? Use less for loops possibly?
-
 Centipede C;
 
 int time = 100;
@@ -42,6 +39,9 @@ void Cube::initialize() {
   allOff();
   cli();//stop interrupts
 
+  //TODO: Figure out what below code does
+  //(definitely doesn't set interrupt to 1hz..either 30 or 60)
+  
   //set timer1 interrupt at 1Hz
   TCCR1A = 0;// set entire TCCR1A register to 0
   TCCR1B = 0;// same for TCCR1B
@@ -89,6 +89,8 @@ ISR(TIMER1_COMPA_vect){
   C.portWrite(2, 1 << zeroIndexRow);
 
 }
+
+// TODO: Consistently zero base
 
 void Cube::allOff() {
 
